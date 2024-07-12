@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import jakarta.validation.Valid;
 import pt.bitclinic.desafio_springpro_03.dto.ClientDTO;
 import pt.bitclinic.desafio_springpro_03.services.ClientService;
 
@@ -41,11 +42,11 @@ public class ClientController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO dto) {
+	public ResponseEntity<ClientDTO> insert(@Valid @RequestBody ClientDTO dto) {
 		dto = service.insert(dto); 
 		
 		//to generate the correct HTTP response code 201 - Created
-		//good programming practicePost 
+		//good programming practice Post 
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/{id}").buildAndExpand(dto.getId())
 				.toUri();
 		
@@ -53,7 +54,7 @@ public class ClientController {
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ClientDTO> updateById(@PathVariable Long id, @RequestBody ClientDTO dto) {
+	public ResponseEntity<ClientDTO> updateById(@PathVariable Long id, @Valid @RequestBody ClientDTO dto) {
 		dto = service.update(id, dto); 
 		
 		return ResponseEntity.ok(dto);
