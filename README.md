@@ -14,6 +14,7 @@ Projeto desenvolvido no curso Java Spring Professional - Devsuperior
 - Validação de dados com Bean Validation
 
 # Tecnologias usadas
+- Spring initializr
 - Java
 - Base de dados H2
 - Maven 
