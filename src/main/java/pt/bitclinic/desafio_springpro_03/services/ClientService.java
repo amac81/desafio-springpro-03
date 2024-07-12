@@ -3,13 +3,18 @@ package pt.bitclinic.desafio_springpro_03.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import pt.bitclinic.desafio_springpro_03.dto.ClientDTO;
 import pt.bitclinic.desafio_springpro_03.entities.Client;
+import pt.bitclinic.desafio_springpro_03.exceptions.DatabaseException;
+import pt.bitclinic.desafio_springpro_03.exceptions.ResourceNotFoundException;
 import pt.bitclinic.desafio_springpro_03.repositories.ClientRepository;
 
 @Service
@@ -21,8 +26,11 @@ public class ClientService {
 	public ClientDTO findById(Long id) {
 
 		Optional<Client> result = repository.findById(id);
-		Client product = result.get();
-		ClientDTO dto = new ClientDTO(product);
+		
+		Client entity = result.orElseThrow(
+				()-> new ResourceNotFoundException("Recurso não encontrado"));
+		
+		ClientDTO dto = new ClientDTO(entity);
 
 		return dto;
 	}
@@ -42,7 +50,6 @@ public class ClientService {
 		
 		Client entity = new Client(); 
 		copyDtoToEntity(dto, entity);
-		
 		entity = repository.save(entity);
 		
 		return new ClientDTO(entity);
@@ -51,30 +58,41 @@ public class ClientService {
 	@Transactional
 	public ClientDTO update(Long id, ClientDTO dto) {
 	
-		//does not go to the database; object monitored by JPA
-		Client entity = repository.getReferenceById(id); 
-		
-		copyDtoToEntity(dto, entity);		
-		entity = repository.save(entity);
-		
-		return new ClientDTO(entity);
+		try 
+		{
+			//does not go to the database; object monitored by JPA
+			Client entity = repository.getReferenceById(id); 
+			
+			copyDtoToEntity(dto, entity);		
+			entity = repository.save(entity);
+			
+			return new ClientDTO(entity);
+		}catch(EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Recurso não encontrado");
+		}
 	
 	}
-	
-	
-	public void deleteById(Long id) {		
-		repository.deleteById(id);			
+		
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public void deleteById(Long id) {
+		if(!repository.existsById(id)) 
+		{
+			throw new ResourceNotFoundException("Recurso não encontrado");
+		}
+		try {
+			repository.deleteById(id);
+		}catch (DataIntegrityViolationException e) 
+		{
+        	throw new DatabaseException("Falha de integridade referencial");
+		}	
 	}
-	
+		
 	private void copyDtoToEntity(ClientDTO dto, Client entity) {
 		entity.setName(dto.getName());
 		entity.setCpf(dto.getCpf());
 		entity.setIncome(dto.getIncome());
 		entity.setBirthDate(dto.getBirthDate());
 		entity.setChildren(dto.getChildren());				
-	}
-
-	
-	
+	}	
 
 }
