@@ -2,9 +2,13 @@ package pt.bitclinic.desafio_springpro_03.dto;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import pt.bitclinic.desafio_springpro_03.entities.Client;
 
 public class ClientDTO {
+
+	@JsonIgnore	
 	private Long id;
 	private String name;
 	private String cpf;
@@ -29,11 +33,11 @@ public class ClientDTO {
 		birthDate = entity.getBirthDate();
 		children = entity.getChildren();
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
