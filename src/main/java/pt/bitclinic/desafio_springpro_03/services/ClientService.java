@@ -1,9 +1,10 @@
 package pt.bitclinic.desafio_springpro_03.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +29,12 @@ public class ClientService {
 	
 	
 	@Transactional(readOnly = true)
-	public List<ClientDTO> findAll() {
+	public Page<ClientDTO> findAll(Pageable pageable) {
 		
-		List<Client> result = repository.findAll();
+		Page<Client> result = repository.findAll(pageable);
 		
 		//with lambda expression
-		return result.stream().map(x -> new ClientDTO(x)).toList();
+		return result.map(x -> new ClientDTO(x));
 	}
 	
 	@Transactional
@@ -42,7 +43,6 @@ public class ClientService {
 		Client entity = new Client(); 
 		copyDtoToEntity(dto, entity);
 		
-		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
 		
 		return new ClientDTO(entity);

@@ -1,9 +1,10 @@
 package pt.bitclinic.desafio_springpro_03.controllers;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +34,10 @@ public class ClientController {
 	}
 
 	@GetMapping
-	public List<ClientDTO> getAll() {
-		return service.findAll();
+	public ResponseEntity<Page<ClientDTO>> getAll(Pageable pageable) {
+		Page<ClientDTO> page = service.findAll(pageable); 
+		
+		return ResponseEntity.ok(page);
 	}
 	
 	@PostMapping

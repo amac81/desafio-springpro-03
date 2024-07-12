@@ -1,3 +1,11 @@
+/**
+* Programa DESAFIO CRUD de clientes
+* Devsuperior.club
+
+* @author  Arnaldo Canelas
+* @version 1.0
+* @since   2024-07-12
+*/
 package pt.bitclinic.desafio_springpro_03;
 
 import org.springframework.boot.SpringApplication;
