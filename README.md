@@ -11,7 +11,7 @@ Projeto desenvolvido no curso Java Spring Professional - Devsuperior
 - Implementação de operações de CRUD
 - Tratamento de exceções
 - Customização de respostas HTTP
-- Validação de dados com Bean Validationpara banco H2
+- Validação de dados com Bean Validation
 
 # Tecnologias usadas
 - Java
